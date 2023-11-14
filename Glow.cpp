@@ -6,7 +6,10 @@ void Glow() {
         DWORD64 LocalControllerAddress = 0;
         DWORD64 LocalPawnAddress = 0;
 
-        ProcessMgr.ReadMemory(gGame.GetLocalControllerAddress(), LocalControllerAddress);
+        while (LocalControllerAddress == 0) {
+            ProcessMgr.ReadMemory(gGame.GetLocalControllerAddress(), LocalControllerAddress);
+            if (LocalControllerAddress == 0) Sleep(100);
+        }
         ProcessMgr.ReadMemory(gGame.GetLocalPawnAddress(), LocalPawnAddress);
 
         // LocalEntity
