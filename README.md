@@ -1,5 +1,5 @@
-# CS-2-Glow
-Cheat for CS2 (Glow)
+# CS-2-Glow Wallhack
+Cheat for CS2 (Glow) - alternative for OneByteWallhack
 
 #### Glow method
 ```cpp
