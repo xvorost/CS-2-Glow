@@ -5,7 +5,7 @@ Cheat for CS2 (Glow) - alternative for OneByteWallhack
 [xvorost's project](https://discord.gg/xagvBetQ7S)
 
 ### How to complie
-Use Visual Studio 2022, **be sure to add to the DirectX project**. Select "Release" and compile. Compiled files goes in root x64 directory.
+Use Visual Studio 2022, **be sure to add to the [DirectX SDK](https://www.microsoft.com/en-us/download/details.aspx?id=6812) project**. Select "Release" and compile. Compiled files goes in root x64 directory.
 
 #### Glow method
 ```cpp
