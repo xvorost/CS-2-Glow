@@ -11,8 +11,8 @@ namespace Offset
 	// https://github.com/a2x/cs2-dumper/blob/main/generated/client.dll.hpp
 	struct
 	{
-		DWORD PlayerPawn = 0x60C; // CBasePlayerController -> m_hPawn 
-		DWORD EnemySensor = 0x13E4; // m_flDetectedByEnemySensorTime
+		DWORD PlayerPawn = 0x604; // CBasePlayerController -> m_hPawn 
+		DWORD EnemySensor = 0x1440; // m_flDetectedByEnemySensorTime
 	} Entity;
 
 	// https://github.com/a2x/cs2-dumper/blob/main/config.json
