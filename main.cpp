@@ -26,16 +26,80 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 HWND hwnd;
 int WIDTH = 300;
-int HEIGHT = 65;
+int HEIGHT = 155;
 POINTS position = { };
 
 int prelogs_count = 0;
 float on = 86400.f;
 float off = 0.f;
+bool SpottedStatusTrue = true;
+bool SpottedStatusFalse = false;
 
 bool EnableGlow = false;
+bool EnableRadar = false;
+bool EnableTrigger = false;
+int TriggerHotKey = 0;
+int TD = 15;
 
-void Glow() {
+namespace TriggerBot
+{
+    inline DWORD TriggerDelay = 40; // ms
+    inline int HotKey = VK_LMENU;
+    inline std::vector<int> HotKeyList{ VK_LMENU, VK_RBUTTON, VK_XBUTTON1, VK_XBUTTON2, VK_CAPITAL, VK_LSHIFT, VK_LCONTROL };
+
+    inline void SetHotKey(int Index)
+    {
+        HotKey = HotKeyList.at(Index);
+    }
+
+    // Triggerbot
+    void Trigger(const CEntity& LocalEntity);
+}
+
+void TriggerBot::Trigger(const CEntity& LocalEntity)
+{
+    DWORD uHandle = 0;
+    if (!ProcessMgr.ReadMemory<DWORD>(LocalEntity.Pawn.Address + Offset::Pawn.iIDEntIndex, uHandle))
+        return;
+    if (uHandle == -1)
+        return;
+
+    DWORD64 ListEntry = 0;
+    ListEntry = ProcessMgr.TraceAddress(gGame.GetEntityListAddress(), { 0x8 * (uHandle >> 9) + 0x10,0x0 });
+    if (ListEntry == 0)
+        return;
+
+    DWORD64 PawnAddress = 0;
+    if (!ProcessMgr.ReadMemory<DWORD64>(ListEntry + 0x78 * (uHandle & 0x1FF), PawnAddress))
+        return;
+
+    CEntity Entity;
+    if (!Entity.UpdatePawn(PawnAddress))
+        return;
+
+    bool AllowShoot = false;
+
+    AllowShoot = LocalEntity.Pawn.TeamID != Entity.Pawn.TeamID && Entity.Pawn.Health > 0;
+
+    if (!AllowShoot)
+        return;
+
+    static std::chrono::time_point LastTimePoint = std::chrono::steady_clock::now();
+    auto CurTimePoint = std::chrono::steady_clock::now();
+    if (CurTimePoint - LastTimePoint >= std::chrono::milliseconds(TriggerDelay))
+    {
+        const bool isAlreadyShooting = GetAsyncKeyState(VK_LBUTTON) < 0;
+        if (!isAlreadyShooting)
+        {
+            mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+            mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        }
+
+        LastTimePoint = CurTimePoint;
+    }
+}
+
+void Cheat() {
     while (true) {
         // Update EntityList Entry
         gGame.UpdateEntityListEntry();
@@ -60,12 +124,11 @@ void Glow() {
             CEntity Entity;
             DWORD64 EntityAddress = 0;
             ProcessMgr.ReadMemory<DWORD64>(gGame.GetEntityListEntry() + (i + 1) * 0x78, EntityAddress);
-            if (EntityAddress == LocalEntity.Controller.Address)
-            {
-                LocalPlayerControllerIndex = i;
-            }
             Entity.UpdateController(EntityAddress);
             Entity.UpdatePawn(Entity.Pawn.Address);
+
+            if (EnableTrigger && GetAsyncKeyState(TriggerBot::HotKey) && LocalEntity.Pawn.WeaponName != "knife")
+                TriggerBot::Trigger(LocalEntity);
 
             if (!EnableGlow)
             {
@@ -74,8 +137,15 @@ void Glow() {
             else {
                 ProcessMgr.WriteMemory(Entity.Pawn.Address + Offset::Entity.EnemySensor, on);
             }
+
+            if (EnableRadar) {
+                ProcessMgr.WriteMemory(Entity.Pawn.Address + Offset::Pawn.bSpottedByMask, SpottedStatusTrue);
+            }
+            else {
+                ProcessMgr.WriteMemory(Entity.Pawn.Address + Offset::Pawn.bSpottedByMask, SpottedStatusFalse);
+            }
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
@@ -103,7 +173,7 @@ int main(HINSTANCE hinst, DWORD fdwReason, LPVOID lpvReserved)
         return 0;
     }
 
-    std::thread run(Glow);
+    std::thread run(Cheat);
 
     RECT desktop;
     GetWindowRect(GetDesktopWindow(), &desktop);
@@ -196,25 +266,53 @@ int main(HINSTANCE hinst, DWORD fdwReason, LPVOID lpvReserved)
         {
             ImGui::Begin("xvisual - CS 2 by xvorost", NULL, 18470);
 
-            ImGui::Spacing();
-            ImGui::Text(" ");
-            ImGui::SameLine();
-            ImGui::BulletText("Enable Glow:"); ImGui::SameLine();
-            ImGui::Checkbox("##EnableGlow", &EnableGlow);
-            ImGui::SameLine();
-            ImGui::Text("        ");
-            ImGui::SameLine();
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.769f, 0.349f, 0.333f, 1.000f));
-            if (ImGui::Button("_")) ::ShowWindow(hwnd, SW_MINIMIZE);
-            ImGui::PopStyleColor(1);
-            ImGui::SameLine();
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.769f, 0.349f, 0.333f, 1.000f));
-            if (ImGui::Button("X")) {
-                ShellExecute(NULL, L"open", L"https://github.com/xvorost/", NULL, NULL, SW_SHOWNORMAL);
-                exit(0);
-            }
-            ImGui::PopStyleColor(1);
+            ImGui::PushItemWidth(80);
+            {
+                ImGui::Spacing();
+                ImGui::Text(" ");
+                ImGui::SameLine();
+                ImGui::BulletText("Enable Glow:"); ImGui::SameLine();
+                ImGui::Checkbox("##EnableGlow", &EnableGlow);
+                ImGui::SameLine();
+                ImGui::Text("        ");
+                ImGui::SameLine();
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.769f, 0.349f, 0.333f, 1.000f));
+                if (ImGui::Button("_")) ::ShowWindow(hwnd, SW_MINIMIZE);
+                ImGui::PopStyleColor(1);
+                ImGui::SameLine();
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.769f, 0.349f, 0.333f, 1.000f));
+                if (ImGui::Button("X")) {
+                    ShellExecute(NULL, L"open", L"https://github.com/xvorost/", NULL, NULL, SW_SHOWNORMAL);
+                    exit(0);
+                }
+                ImGui::PopStyleColor(1);
 
+                ImGui::Text(" ");
+                ImGui::SameLine();
+                ImGui::BulletText("Enable Radar:"); ImGui::SameLine();
+                ImGui::Checkbox("##EnableRadar", &EnableRadar);
+
+                ImGui::Text(" ");
+                ImGui::SameLine();
+                ImGui::BulletText("Enable TriggerBot:"); ImGui::SameLine();
+                ImGui::Checkbox("##EnableTrigger", &EnableTrigger);
+
+                ImGui::Text(" ");
+                ImGui::SameLine();
+                ImGui::Text("Trigger Key:"); ImGui::SameLine();
+                if (ImGui::Combo("##TriggerKey", &TriggerHotKey, "MENU\0RBUTTON\0XBUTTON1\0XBUTTON2\0CAPITAL\0SHIFT\0CONTROL\0"))
+                {
+                    TriggerBot::SetHotKey(TriggerHotKey);
+                }
+
+                ImGui::Text(" ");
+                ImGui::SameLine();
+                ImGui::Text("Delay:");
+                ImGui::SameLine(); ImGui::InputInt("##TriggerDelay", &TD, 0, 0);
+                if (TD < 0) TD = 0; else if (TD > 200) TD = 200;
+                TriggerBot::TriggerDelay = (DWORD)TD;
+
+            }
             ImGui::End();
         }
 
@@ -315,7 +413,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
             return 0;
         break;
     case WM_DESTROY:
-        ShellExecute(NULL, L"open", L"https://github.com/xvorost/", NULL, NULL, SW_SHOWNORMAL);
+        //ShellExecute(NULL, L"open", L"https://github.com/xvorost/", NULL, NULL, SW_SHOWNORMAL);
         ::PostQuitMessage(0);
         return 0;
     case WM_LBUTTONDOWN:
