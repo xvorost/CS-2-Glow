@@ -11,9 +11,20 @@ namespace Offset
 	// https://github.com/a2x/cs2-dumper/blob/main/generated/client.dll.hpp
 	struct
 	{
+		DWORD Health = 0x334;
+		DWORD TeamID = 0x3CB;
 		DWORD PlayerPawn = 0x604; // CBasePlayerController -> m_hPawn 
 		DWORD EnemySensor = 0x1440; // m_flDetectedByEnemySensorTime
 	} Entity;
+
+	struct
+	{
+		DWORD CurrentHealth = 0x334; // m_iHealth
+		DWORD pClippingWeapon = 0x1308;
+		DWORD iIDEntIndex = 0x15A4;
+		DWORD iTeamNum = 0x3CB;
+		DWORD bSpottedByMask = 0x1698 + 0xC;
+	} Pawn;
 
 	// https://github.com/a2x/cs2-dumper/blob/main/config.json
 	namespace Signatures
