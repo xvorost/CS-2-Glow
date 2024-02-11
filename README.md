@@ -1,6 +1,11 @@
 # CS-2-Glow Wallhack
 Cheat for CS2 (Glow) - alternative for OneByteWallhack
 
+## Features
+- Glow
+- Radar Hack
+- Trigger Bot
+
 ### Discord-server:
 [xvorost's project](https://discord.gg/xagvBetQ7S)
 
