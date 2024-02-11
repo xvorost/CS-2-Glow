@@ -18,6 +18,8 @@ ProcessMgr.WriteMemory(Entity.Pawn.Address + Offset::Entity.EnemySensor, 86400.f
 ```
 
 #### Preview
-![image](https://github.com/xvorost/CS-2-Glow/assets/66530241/14fb5d7d-aa4a-420a-8253-397bcda7b58b)
+![image](https://github.com/xvorost/CS-2-Glow/assets/66530241/b4c080a2-25a4-457b-9ee1-b5d5480af3a4)
+
+![image](https://github.com/xvorost/CS-2-Glow/assets/66530241/adcf33cf-53e6-48ab-b708-3f412b795ebb)
 
 ![image](https://github.com/xvorost/CS-2-Glow/assets/66530241/4e4e78dd-e3fd-40de-a0ac-1772309b85b9)
