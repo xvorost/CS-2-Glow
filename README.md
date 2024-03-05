@@ -1,6 +1,8 @@
 # CS-2-Glow Wallhack
 Cheat for CS2 (Glow) - alternative for OneByteWallhack
 
+# DETECTED
+
 ## Features
 - Glow
 - Radar Hack
