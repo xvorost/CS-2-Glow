@@ -9,8 +9,6 @@ https://github.com/xvorost/CS-2-Glow/releases
 
 ## Features
 - Glow
-- Radar Hack
-- Trigger Bot
 
 ### Discord-server:
 [xvorost's project](https://discord.gg/xagvBetQ7S)
