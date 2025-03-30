@@ -8,7 +8,7 @@ https://github.com/xvorost/CS-2-Glow/releases/tag/v.2.0-new
 https://github.com/xvorost/CS-2-Glow/releases
 
 ## Features
-- Glow
+- Health-base Glow
 
 ### Discord-server:
 [xvorost's project](https://discord.gg/xagvBetQ7S)
