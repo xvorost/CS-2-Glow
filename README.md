@@ -2,7 +2,7 @@
 Cheat for CS2 (Glow) - alternative for OneByteWallhack
 
 # Current version:
-https://github.com/xvorost/CS-2-Glow/releases/tag/v.2.1.1-new
+https://github.com/xvorost/CS-2-Glow/releases/tag/v.2.1.3-new
 
 ## New updates are now here: 
 https://github.com/xvorost/CS-2-Glow/releases
