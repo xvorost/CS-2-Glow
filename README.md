@@ -16,4 +16,5 @@ https://github.com/xvorost/CS-2-Glow/releases
 
 #### Preview
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8223abcc-6884-47df-b01f-20110861337b" />
-![upd](https://github.com/user-attachments/assets/322cdf47-5225-4966-8023-fa5f4f5ac7d8)
+<img width="692" height="388" alt="image" src="https://github.com/user-attachments/assets/2a035db2-1151-4909-ac3c-39dc1bfa1a56" />
+
