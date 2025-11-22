@@ -12,7 +12,7 @@ https://github.com/xvorost/CS-2-Glow/releases
 - Player color tags
 
 ### Discord-server:
-[xvorost's project](https://discord.gg/xagvBetQ7S)
+[EXPLOITLAB SERVER](https://discord.gg/xagvBetQ7S)
 
 ### My Private Cheats Project:
 [EXPLOITLAB](https://exploitlab.ru/)
